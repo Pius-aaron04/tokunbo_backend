@@ -10,8 +10,9 @@ class Database {
   }
 
   _connect() {
-    mongoose.connect(
-      `mongodb://${server}/${database}`)
+    const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
+
+    mongoose.connect(uri) 
     .then(() => {
       console.log('Database connection successful')
     })
