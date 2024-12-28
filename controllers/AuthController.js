@@ -1,7 +1,7 @@
 // controllers/auth.js
 
 
-const {hashedPassword, verifyPassword, hashPassword} = require('../utils/auth_helpers');
+const {hashedPassword, verifyPassword, hashPassword, generateToken} = require('../utils/auth_helpers');
 const User = require('../models/user');
 const HTTP_STATUS = {
   CREATED: 201,
@@ -71,7 +71,12 @@ class AuthController{
       if (!isPasswordValid) {
         return res.status(401).json({ error: 'Invalid Credentials' });
       }
-      const payload = AuthController.sanitizeUser(user.toObject());
+      const payload = {
+        message: 'Login successful',
+      }
+      payload.user = AuthController.sanitizeUser(user.toObject());
+      const accessToken = generateToken(user._id.toString());
+      payload.accessToken = accessToken;
       return res.status(200).json(payload);
     }
   }
