@@ -1,14 +1,19 @@
-// controllers/auth.js
+// controllers/AuthController.js
 
-
-const {hashedPassword, verifyPassword, hashPassword, generateToken} = require('../utils/auth_helpers');
-const User = require('../models/user');
+const {
+  hashedPassword,
+  verifyPassword,
+  hashPassword,
+  generateToken,
+} = require("../utils/auth_helpers");
+const User = require("../models/user");
+const { validationResult } = require("express-validator");
 const HTTP_STATUS = {
   CREATED: 201,
   BAD_REQUEST: 400,
   CONFLICT: 409,
-  SERVER_ERROR: 500
-}
+  SERVER_ERROR: 500,
+};
 
 class AuthController{
   static createUser = async (payload) => {
