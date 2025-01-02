@@ -32,13 +32,18 @@ const userSchema = mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    required: true,
-    default: false
+    default: false,
+    value: false
   },
   emailVerified: {
     type: Boolean,
-    required: true,
-    default: false
+    default: false,
+    value: false
+  },
+  phoneVerified: {
+    type: Boolean,
+    default: false,
+    value: false
   }
 }, {timestamps: true});
 
