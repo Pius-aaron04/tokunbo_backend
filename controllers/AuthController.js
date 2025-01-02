@@ -85,6 +85,40 @@ class AuthController{
       return res.status(200).json(payload);
     }
   }
+
+  static async requestEmailVerification(req, res) {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    // otp generation and email service integration
+    const otp = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    console.log(`otp: ${otp} sent to ${req.body.email}`);
+    // send otp to user's email
+    return res.status(200).json({message: 'OTP sent successfully'});
+  }
+
+  static async verifyUserEmail(req, res) {
+    const result = validationResult(req);
+    const otp = req.body.otp;
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+
+    const user = await User.findOne({email: req.body.email}).exec();
+    if(!user){
+      return res.status(400).json({error: 'Invalid Credentials'});
+    } else {
+      // fetch otp from redis cache
+      if (otp !== req.body.otp) {
+        return res.status(400).json({ error: 'Invalid OTP' });
+      }
+      // Update user's email verification status
+      user.emailVerified = true;
+      await user.save();
+      return res.status(200).json({message: 'Email verified successfully'});
+    }
+  }
 }
 
 
