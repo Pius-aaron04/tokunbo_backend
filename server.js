@@ -3,7 +3,10 @@ require('dotenv').config()
 const express = require('express');
 const indexRouter = require('./routes/index');
 
+// establish database connection
 require('./config/database');
+//establish redis connection
+require('./config/redis').connect();
 const app = express();
 
 app.use(express.json());

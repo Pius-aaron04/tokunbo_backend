@@ -1,5 +1,6 @@
 // controllers/AuthController.js
 
+const redis = require("../config/redis");
 const {
   hashedPassword,
   verifyPassword,
@@ -8,6 +9,7 @@ const {
 } = require("../utils/auth_helpers");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
+const email = require("../services/email");
 const HTTP_STATUS = {
   CREATED: 201,
   BAD_REQUEST: 400,
@@ -91,16 +93,39 @@ class AuthController{
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
+
+    const user = await User.findOne({email: req.body.email}).exec();
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const activeRequest = await redis.get(req.body.email);
+
+    if (activeRequest) {
+      return res.status(400).json({ error: 'Email verification request already sent' });
+    }
     // otp generation and email service integration
-    const otp = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    console.log(`otp: ${otp} sent to ${req.body.email}`);
+    const emailResult = await email.sendOtp(req.body.email);
+    if (emailResult.errorNiche) {
+      return res.status(500).json({ error: emailResult.errorNiche });
+    }
+    try{
+      console.log(emailResult.d_ata.otp)
+      await redis.set(req.body.email, emailResult.d_ata.otp, {
+        EX: 300
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
+    }
     // send otp to user's email
     return res.status(200).json({message: 'OTP sent successfully'});
   }
 
   static async verifyUserEmail(req, res) {
     const result = validationResult(req);
-    const otp = req.body.otp;
+    let otp;
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
@@ -109,7 +134,15 @@ class AuthController{
     if(!user){
       return res.status(400).json({error: 'Invalid Credentials'});
     } else {
-      // fetch otp from redis cache
+      // check if email is already verified
+      if (user.emailVerified) {
+        return res.status(400).json({ error: 'Email already verified' });
+      }
+      // gets and verifies otp from redis
+      otp = await redis.get(req.body.email);
+      if (!otp) {
+        return res.status(400).json({ error: 'Invalid OTP' });
+      }
       if (otp !== req.body.otp) {
         return res.status(400).json({ error: 'Invalid OTP' });
       }

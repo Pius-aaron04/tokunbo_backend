@@ -9,7 +9,7 @@ const authRouter = Router();
 authRouter.post("/signup", AuthController.registerUser);
 authRouter.post("/signin", AuthController.loginUser);
 authRouter.post(
-  "/verify_email/confirm-otp",
+  "/verify_email/confirm_otp",
   body("email").isEmail().notEmpty(),
   body("otp").isLength({ min: 6, max: 6 }).notEmpty(),
   AuthController.verifyUserEmail
