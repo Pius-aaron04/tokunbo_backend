@@ -1,8 +1,6 @@
 // src/database.js
 
 const mongoose = require('mongoose');
-const server = '127.0.0.1:27017';
-const database = 'playgroung';
 
 class Database {
   constructor() {
@@ -17,7 +15,7 @@ class Database {
       console.log('Database connection successful')
     })
     .catch((err) => {
-      console.error('Database connection failed');
+      console.error(`Database connection failed: ${err.message}`);
     });
   }
 }
