@@ -37,6 +37,7 @@ const authenticateUser = async (req, res, next) => {
         req.user = payload;
         next();
     } catch (error) {
+        console.error(error);
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };

@@ -111,7 +111,6 @@ class AuthController{
       return res.status(500).json({ error: emailResult.errorNiche });
     }
     try{
-      console.log(emailResult.d_ata.otp)
       await redis.set(req.body.email, emailResult.d_ata.otp, {
         EX: 300
       });

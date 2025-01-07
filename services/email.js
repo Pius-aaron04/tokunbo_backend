@@ -43,7 +43,6 @@ class EmailService {
 	async sendOtp(to) {
 		const otp = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
 		const { response } = await this.sendEmail(to, 'OTP', `Your OTP is ${otp}`, `Your OTP is ${otp}`);
-		console.log(response);
 		if (response.statusText === 'OK') {
 			//logic to store otp in redis
 			response.d_ata = { otp };
