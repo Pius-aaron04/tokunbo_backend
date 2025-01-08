@@ -1,9 +1,10 @@
 // models/category.js
 
 const mongoose = require("mongoose");
+const slug = require('mongoose-slug-updater');
 
 const categorySchema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
     required: true,
   },
@@ -11,6 +12,11 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+	slug: {
+		type: String,
+		slug: "title",
+		unique: true
+	},
 	parentId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Category",
