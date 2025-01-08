@@ -43,5 +43,25 @@ const productSchema = mongoose.Schema({
   },
 }, { timestamps: true });
 
+// -- STOCK MANAGEMENT METHODS ---
+
+productSchema.methods.decreaseStock = async (quantity) => {
+  if (this.stockQuantity >= quantity){
+    this.stockQuantity -= quantity
+    await this.save();
+  } else {
+    throw Error('Not enough stock available');
+  }
+}
+
+
+productSchema.methods.increaseStock = async (quantity) => {
+  this.stockQuantity += quantity;
+  await this.save();
+}
+
+productSchema.methods.isInStock = (quantity) => {
+  return this.stockQuantity >= quantity;
+}
 
 moudule.exports = new mongoose.model('Product', productSchema);
