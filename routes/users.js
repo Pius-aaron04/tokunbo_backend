@@ -1,18 +1,13 @@
 // routes/user.js
 const { Router } = require('express');
-const User = require('../models/user');
 const { authenticateUser } = require('../utils/auth_helpers');
+const UserController = require('../controllers/UserController');
 
 const userRouter = Router();
-userRouter.get('/me', authenticateUser, async (req, res) => {
-    let user = await User.findOne({_id: req.user.userId}).exec();
-    if(!user){
-        return res.status(401).json({error: 'Unauthorized'});
-    }
-    
-    user = user.toObject();
-    delete user.pwd_hash;
-    return res.status(200).json(user);
-});
+
+// Profile endpoints
+userRouter.get('/me', authenticateUser, UserController.getMe); // Get logged-in user profile
+userRouter.put('/me/update_profile', authenticateUser, UserController.updateMe); // Update profile
+userRouter.delete('/me', authenticateUser, UserController.deleteMe); // Delete profile
 
 module.exports = userRouter;
