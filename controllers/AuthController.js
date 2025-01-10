@@ -27,6 +27,9 @@ class AuthController{
   static sanitizeUser = (user) => {
     delete user.pwd_hash;
     delete user.__v;
+    if (user.wishList) {
+      delete user.wishList
+    }
     return user;
   };
   
