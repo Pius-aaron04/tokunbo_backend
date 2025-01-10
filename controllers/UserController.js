@@ -3,6 +3,7 @@
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
 const { sanitizeUser } = require("./AuthController");
+const Order = require("../models/order").orderModel;
 
 class UserController {
   static async getMe(req, res) {
@@ -65,6 +66,23 @@ class UserController {
 		}
 		res.status(200).json({ message: "User deleted successfully" });
   }
+
+	static async getOrders(req, res) {
+		const user = await User.findById(req.user.userId).exec();
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+	
+		const orders = await Order.find({ user: user._id })
+		.skip(skip)
+		.limit(limit)
+		.sort({ createdAt: -1 })
+		.exec();		
+		res.status(200).json({ orders });
+	}
 }
 
 module.exports = UserController;

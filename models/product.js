@@ -24,12 +24,12 @@ const productSchema = mongoose.Schema({
     min: [0, 'Stock cannot be negative']
   },
   categoryId: {
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'Category',
   },
   sellerId: {
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User',
   },
@@ -64,4 +64,4 @@ productSchema.methods.isInStock = (quantity) => {
   return this.stockQuantity >= quantity;
 }
 
-moudule.exports = new mongoose.model('Product', productSchema);
+module.exports = new mongoose.model('Product', productSchema);

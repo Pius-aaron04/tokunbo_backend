@@ -10,4 +10,7 @@ userRouter.get('/me', authenticateUser, UserController.getMe); // Get logged-in 
 userRouter.put('/me/update_profile', authenticateUser, UserController.updateMe); // Update profile
 userRouter.delete('/me', authenticateUser, UserController.deleteMe); // Delete profile
 
+// Order endpoints
+userRouter.get('/me/orders', authenticateUser, UserController.getOrders); // Get logged-in user orders
+
 module.exports = userRouter;
