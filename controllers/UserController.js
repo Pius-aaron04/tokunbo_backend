@@ -83,6 +83,43 @@ class UserController {
 		.exec();		
 		res.status(200).json({ orders });
 	}
+
+	static async getWishlist(req, res) {
+		const user = await User.findById(req.user.userId).exec();
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		const wishList = user.wishList;
+		res.status(200).json({ wishlist });
+	}
+
+	static async addToWishlist(req, res) {
+		const user = await User.findById(req.user.userId).exec();
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		const product = await Product.findById(req.body.productId).exec();
+		if (!product) {
+			return res.status(404).json({ error: "Product not found" });
+		}
+		user.wishList.push(product._id);
+		await user.save();
+		res.status(200).json({ message: "Product added to wishlist" });
+	}
+
+	static async removeFromWishlist(req, res) {
+		const user = await User.findById(req.user.userId).exec();
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		const product = await Product.findById(req.body.productId).exec();
+		if (!product || !user.wishList.includes(product._id)) {
+			return res.status(404).json({ error: "Product not found" });
+		}
+		user.wishList = user.wishList.filter((p) => p.toString() !== product._id.toString());
+		await user.save();
+		res.status(200).json({ message: "Product removed from wishlist" });
+	}
 }
 
 module.exports = UserController;

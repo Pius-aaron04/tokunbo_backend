@@ -11,6 +11,9 @@ userRouter.put('/me/update_profile', authenticateUser, UserController.updateMe);
 userRouter.delete('/me', authenticateUser, UserController.deleteMe); // Delete profile
 
 // Order endpoints
-userRouter.get('/me/orders', authenticateUser, UserController.getOrders); // Get logged-in user orders
-
+userRouter.get('/me/orders', authenticateUser, UserController.getOrders); // Get logged-in user orders history
+// Wishlist
+userRouter.get('/me/wishlist', authenticateUser, UserController.getWishlist); // Fetch wishlist
+userRouter.post('/me/wishlist', authenticateUser, UserController.addToWishlist); // Add/Update wishlist
+userRouter.delete('/me/wishlist', authenticateUser, UserController.removeFromWishlist); // Remove from wishlist
 module.exports = userRouter;
