@@ -2,6 +2,7 @@
 
 const mongoose = require("mongoose");
 const { use } = require("passport");
+const wishList = require("./wishList");
 
 const userSchema = mongoose.Schema({
   email: {
@@ -44,6 +45,11 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     default: false,
     value: false
+  },
+  wishList: {
+    type: [ mongoose.Schema.Types.ObjectId ],
+    ref: 'Product',
+    required: false
   }
 }, {timestamps: true});
 
