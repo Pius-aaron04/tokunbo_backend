@@ -1,6 +1,6 @@
 // controllers/ProductController.js
-const Product = require("../models/Product");
-const User = require("../models/User");
+const Product = require("../models/product");
+const User = require("../models/user");
 const { validationResult } = require("express-validator");
 
 class productController {
