@@ -3,9 +3,15 @@
 const productRouter = require("express").Router();
 const authenticateUser = require("../utils/auth_helpers").authenticateUser;
 const { body } = require("express-validator");
+const { query } = require("express-validator");
 const ProductController = require("../controllers/ProductController");
 
 productRouter.get("/", ProductController.getAllProducts);
+productRouter.get(
+  "/search",
+  query("q").isString().optional(),
+  ProductController.searchProducts
+);
 productRouter.get("/:id", ProductController.getProductById);
 productRouter.post(
   "/",

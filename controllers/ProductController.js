@@ -117,6 +117,24 @@ class productController {
 			res.status(500).json({ error: "Internal server error" });
 		}
 	}
+
+	static async searchProducts(req, res) {
+		const query = req.query.q;
+		const limit = parseInt(req.query.limit) || 10;
+		const page = parseInt(req.query.page) || 1;
+		const skip = (page - 1) * limit;
+		try{
+			const products = Product.find({ title: { $regex: query, $options: "i" } })
+				.limit(limit)
+				.skip(skip)
+				.exec()
+
+			return res.status(200).json({ products });
+			} catch (err) {
+				console.error(err);
+				res.status(500).json({ error: "Internal server error" });
+		}
+	}
 }
 
 module.exports = productController;
