@@ -13,11 +13,15 @@ class productController {
 			const user = await User.findById(req.user.userId).exec();
 			if (!user) {
 				return res.status(404).json({ error: "User not found" });
-			} else if (user.role !== "admin" || user.role !== "seller") {
+			} else if (user.role !== "seller" && user.role !== "admin") {
 				return res.status(403).json({ error: "Access denied" });
 			}
 			const product = new Product(req.body);
 			product.sellerId = user._id;
+			let category = Category.findById(req.body.categoryId).exec();
+			if (!category) {
+				return res.status(404).json({ error: "Category not found" });
+			}
 			await product.save();
 			res.status(201).json({ message: "Product created successfully", product });
 		} catch (err) {
