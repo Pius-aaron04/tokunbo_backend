@@ -102,6 +102,21 @@ class productController {
 		}
 		return res.status(204).json({ message: "Product deleted successfully" });
 	}
+
+	static  async getProductReviews(req, res) {
+		const Review = require("../models/review");
+		try{
+			const product = await Product.findById(req.params.ProductId);
+			if (!product) {
+				return res.status(404).json({ error: "Product not found" });
+			}
+			const reviews = await Review.find({ productId: product._id }).exec();
+			res.status(200).json({ reviews });
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({ error: "Internal server error" });
+		}
+	}
 }
 
 module.exports = productController;
